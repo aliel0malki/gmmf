@@ -1,0 +1,32 @@
+name: (S) Tests Pull Request
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  testing:
+    name: Build and Run Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Zig
+        uses: mlugg/setup-zig@v1
+        with:
+          version: 0.13.0
+
+      - name: Build the binary
+        run: make
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.13'
+
+      - name: Run tests
+        run: |
+          chmod +x test.py
+          ./test.py replay test.list

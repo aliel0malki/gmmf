@@ -1,0 +1,6 @@
+./build/bin/gmmf
+./build/bin/gmmf __tests__/ file1
+./build/bin/gmmf __tests__/ subfile1
+./build/bin/gmmf __tests__/ subsubfile1
+./build/bin/gmmf __tests__/ subsubsubfile1
+./build/bin/gmmf __tests__/ filenotfound1
