@@ -1,4 +1,8 @@
-[![LOGO](https://github.com/aliel0malki/gmmf/blob/main/assets/logo.png)](https://github.com/aliel0malki/gmmf)
+<p align="center">
+  <a href="https://github.com/aliel0malki/gmmf">
+    <img src="https://github.com/aliel0malki/gmmf/blob/main/assets/logo.png" alt="GMMF Logo" width="50" />
+  </a>
+</p>
 
 **GMMF - General Multi-Purpose File Finder**
 
