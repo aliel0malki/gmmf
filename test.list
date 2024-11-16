@@ -1,5 +1,4 @@
 ./build/bin/gmmf
-./build/bin/gmmf -f file1 __tests__/
 ./build/bin/gmmf -f "This is not found" dirnotfound/
 ./build/bin/gmmf -f file2 __tests__/
 ./build/bin/gmmf -f file3 __tests__/

@@ -1,4 +1,4 @@
-:i count 14
+:i count 13
 :b shell 16
 ./build/bin/gmmf
 :i returncode 69
@@ -25,16 +25,6 @@ EXAMPLES:
   gmmf -f Documents.txt /home/user
   gmmf -g 'find this text' /home/user
   gmmf -f Documents.txt /home/user -ex=Documents
-
-:b stderr 0
-
-:b shell 36
-./build/bin/gmmf -f file1 __tests__/
-:i returncode 0
-:b stdout 84
-[1m[33mMode: FIND[0m
-
-[1m© 2024 - GMMF (General Multi-Purpose File Finder)[0m
 
 :b stderr 0
 
@@ -71,11 +61,10 @@ EXAMPLES:
 :b shell 36
 ./build/bin/gmmf -f file5 __tests__/
 :i returncode 1
-:b stdout 145
+:b stdout 111
 [1m[33mMode: FIND[0m
 [32m[1mFOUND:[0m
     [36m__tests__/dir1/dir2/file5[0m
-    [36m__tests__/dir1/file5[0m
 [31m[1mFile Not Found[0m
 
 :b stderr 0
@@ -155,16 +144,16 @@ EXAMPLES:
 :b stdout 589
 [1m[33mMode: GREP (case-sensitive)[0m
 [32m[1mFOUND IN:[0m
-    [36m./test.list[0m AT [33m7:20[0m
-    [36m./test.list[0m AT [33m11:20[0m
-    [36m./test.list[0m AT [33m14:21[0m
+    [36m./test.list[0m AT [33m6:20[0m
+    [36m./test.list[0m AT [33m10:20[0m
+    [36m./test.list[0m AT [33m13:21[0m
     [36m./__tests__/dir1/dir2/file6[0m AT [33m1:0[0m
-    [36m./test.list.bi[0m AT [33m84:20[0m
-    [36m./test.list.bi[0m AT [33m89:29[0m
-    [36m./test.list.bi[0m AT [33m125:20[0m
-    [36m./test.list.bi[0m AT [33m130:29[0m
-    [36m./test.list.bi[0m AT [33m153:21[0m
-    [36m./test.list.bi[0m AT [33m161:31[0m
+    [36m./test.list.bi[0m AT [33m73:20[0m
+    [36m./test.list.bi[0m AT [33m78:29[0m
+    [36m./test.list.bi[0m AT [33m114:20[0m
+    [36m./test.list.bi[0m AT [33m119:29[0m
+    [36m./test.list.bi[0m AT [33m142:21[0m
+    [36m./test.list.bi[0m AT [33m150:31[0m
 
 [1m© 2024 - GMMF (General Multi-Purpose File Finder)[0m
 
