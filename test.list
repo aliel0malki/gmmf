@@ -1,6 +1,12 @@
 ./build/bin/gmmf
-./build/bin/gmmf __tests__/ file1
-./build/bin/gmmf __tests__/ subfile1
-./build/bin/gmmf __tests__/ subsubfile1
-./build/bin/gmmf __tests__/ subsubsubfile1
-./build/bin/gmmf __tests__/ filenotfound1
+./build/bin/gmmf -f file1 __tests__/
+./build/bin/gmmf -f "This is not found" dirnotfound/
+./build/bin/gmmf -f subfile1 __tests__/
+./build/bin/gmmf -f subsubfile1 __tests__/
+./build/bin/gmmf -f subsubsubfile1 __tests__/
+./build/bin/gmmf -f filenotfound __tests__/
+./build/bin/gmmf -g "This is file1" __tests__/
+./build/bin/gmmf -g Thisissubfile1 __tests__/
+./build/bin/gmmf -g "This is subsubfile1" __tests__/
+./build/bin/gmmf -g Thisissubsubsubfile1 __tests__/
+./build/bin/gmmf -g "This is not found" __tests__/
