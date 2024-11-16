@@ -31,6 +31,7 @@ const mem = std.mem;
 const heap = std.heap;
 const proc = std.process;
 const stdout = std.io.getStdOut().writer();
+const stderr = std.io.getStdErr().writer();
 const Color = @import("utils.zig").Color;
 const findFileRecursive = @import("utils.zig").findFileRecursive;
 const grepSearch = @import("utils.zig").grepSearch;
@@ -48,38 +49,52 @@ pub fn main() !u8 {
         return 69;
     }
 
-    const mode = if (args.len > 3) args[1] else "-f";
-    const searchTerm = args[args.len - 2];
-    const directory = args[args.len - 1];
+    const mode = args[1];
+    const searchTerm = args[2];
+    const directory = args[3];
+    var exclude = std.ArrayList([]const u8).init(allocator);
+    defer exclude.deinit();
 
+    for (args) |arg| {
+        if (mem.startsWith(u8, arg, "-ex=")) {
+            try exclude.append(arg[4..]);
+        }
+    }
+
+    // Access directory and handle errors
     fs.cwd().access(directory, .{}) catch |err| {
         switch (err) {
             error.FileNotFound => {
-                try stdout.print("{s}{s}ERROR: Directory Not Found{s}\n", .{ Color.Red, Color.Bold, Color.Reset });
+                try stderr.print("{s}{s}ERROR: Directory Not Found{s}\n", .{ Color.Red, Color.Bold, Color.Reset });
                 return 1;
             },
-            else => return err,
+            else => {
+                try stderr.print("{s}{s}ERROR: {s}{s}\n", .{ Color.Red, Color.Bold, @errorName(err), Color.Reset });
+                return 1;
+            },
         }
     };
 
+    // Mode handling for search functionality
     if (mem.eql(u8, mode, "-g") or mem.eql(u8, mode, "grep")) {
         try stdout.print("{s}{s}Mode: GREP (case-sensitive){s}\n", .{ Color.Bold, Color.Yellow, Color.Reset });
-        const found = try grepSearch(directory, searchTerm, &allocator);
+        const found = try grepSearch(directory, searchTerm, &allocator, exclude.items);
         if (!found) {
             try stdout.print("{s}{s}No Matches Found{s}\n", .{ Color.Red, Color.Bold, Color.Reset });
             return 1;
         }
     } else if (mem.eql(u8, mode, "-f") or mem.eql(u8, mode, "find")) {
         try stdout.print("{s}{s}Mode: FIND{s}\n", .{ Color.Bold, Color.Yellow, Color.Reset });
-        if (!(try findFileRecursive(directory, searchTerm, &allocator))) {
+        if (!(try findFileRecursive(directory, searchTerm, &allocator, exclude.items))) {
             try stdout.print("{s}{s}File Not Found{s}\n", .{ Color.Red, Color.Bold, Color.Reset });
             return 1;
         }
     } else {
-        try stdout.print("{s}{s}Invalid Mode: {s}{s}\n", .{ Color.Red, Color.Bold, mode, Color.Reset });
+        try stderr.print("{s}{s}Invalid Mode: {s}{s}\n", .{ Color.Red, Color.Bold, mode, Color.Reset });
         return 1;
     }
 
+    // Success message
     try stdout.print("\n{s}© 2024 - GMMF (General Multi-Purpose File Finder){s}\n", .{ Color.Bold, Color.Reset });
     return 0;
 }
