@@ -6,15 +6,16 @@
 
 **GMMF - General Multi-Purpose File Finder**
 
-> v0.2.0
+> version 0.45.0
 
 
 ## Features
 - Quickly find files
-- Word-based search (not implemented yet)
-- Regular expression-based search (not implemented yet)
-- Support for hidden files
+- Word-based search
+- Grep-like search inside files
 - Recursive search
+- Support for hidden files
+- Regular expression-based search (coming soon)
 - Blazingly fast performance
 
 
@@ -47,15 +48,22 @@ Download a pre-built binary for your platform from the [releases page](https://g
 To use `GMMF`, run it from your terminal with the following format:
 
 ```bash
-gmmf <directory> <file name>
+gmmf <mode> <search string> <directory>
 ```
 
-Replace `<directory>` with the directory you want to search in, and `<file_name>` with the name of the file you're looking for.
+Replace `<mode>` with `-f` for finding files or `-g` for searching within files, `<search string>` with the name of the file or content you're looking for, and `<directory>` with the directory you want to search in.
 
-For example:
+### Examples:
 ```bash
-gmmf /home/user documents.txt
+gmmf -f documents.txt /home/user
+gmmf -g "find this text" /home/user
 ```
+
+### Modes:
+- `-f` (default): Search for a file by name.
+- `-g`: Search for a string inside files (grep-like search).
+
+**Note**: If the mode is omitted, the default mode is `-f`.
 
 
 ## License
