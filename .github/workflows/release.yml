@@ -31,8 +31,11 @@ jobs:
 
       - name: Run tests
         run: |
+          chmod +x prepare-testing.py
+          ./prepare-testing.py
           chmod +x test.py
           ./test.py replay test.list
+          rm -rf __tests__
 
   build_and_release:
     name: Build and Create Release
