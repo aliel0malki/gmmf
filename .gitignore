@@ -1,5 +1,4 @@
 .zig-cache/
 .zig-out/
-__tests__/
 build/
 .env*
