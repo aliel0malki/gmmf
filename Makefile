@@ -31,7 +31,7 @@ TARGET = gmmf
 OPT_SAFE = ReleaseSafe
 OPT_DEBUG = Debug
 
-.PHONY: all clean run install debug
+.PHONY: all clean run install testing debug
 
 all: native
 native: clean
@@ -49,3 +49,7 @@ install:
 	@echo "Installed $(TARGET) to /usr/local/bin/$(TARGET)"
 debug: clean
 	zig build -Doptimize=$(OPT_DEBUG) --prefix $(BUILD_DIR)
+testing: native
+	@echo "Testing $(TARGET)..."
+	chmod +x ./test.py
+	./test.py replay test.list
