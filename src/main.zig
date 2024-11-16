@@ -3,7 +3,7 @@
 //  ----------------------------------------
 //  Author: Ali El0malki
 //  License: MIT License
-//  Version: 0.2.0
+//  Version: 0.45.0
 //
 //  Copyright (c) 2024 ali elmalki
 //
@@ -31,39 +31,9 @@ const mem = std.mem;
 const heap = std.heap;
 const proc = std.process;
 const stdout = std.io.getStdOut().writer();
-
-const Color = struct {
-    pub const Reset = "\x1b[0m";
-    pub const Green = "\x1b[32m";
-    pub const Yellow = "\x1b[33m";
-    pub const Red = "\x1b[31m";
-    pub const Cyan = "\x1b[36m";
-    pub const Bold = "\x1b[1m";
-};
-
-fn findFileRecursive(dir_path: []const u8, target: []const u8, allocator: *std.mem.Allocator) !bool {
-    var dir = try fs.cwd().openDir(dir_path, .{ .iterate = true });
-    defer dir.close();
-    var iter = dir.iterate();
-
-    while (try iter.next()) |entry| {
-        if (entry.kind == .directory) {
-            const subdir_path = try std.fs.path.join(allocator.*, &.{ dir_path, entry.name });
-            defer allocator.free(subdir_path);
-
-            if (try findFileRecursive(subdir_path, target, allocator)) {
-                return true;
-            }
-        }
-
-        if (mem.eql(u8, entry.name, target)) {
-            try stdout.print("{s}{s}FOUND: {s}{s}/{s}{s}\n", .{ Color.Bold, Color.Green, Color.Cyan, dir_path, entry.name, Color.Reset });
-            return true;
-        }
-    }
-
-    return false;
-}
+const Color = @import("utils.zig").Color;
+const findFileRecursive = @import("utils.zig").findFileRecursive;
+const grepSearch = @import("utils.zig").grepSearch;
 
 pub fn main() !u8 {
     var gpa = heap.GeneralPurposeAllocator(.{}){};
@@ -74,12 +44,15 @@ pub fn main() !u8 {
     defer proc.argsFree(allocator, args);
 
     if (args.len < 3) {
-        try stdout.print("{s}{s}GMMF - General Multi-Purpose File Finder{s}\n\n", .{ Color.Bold, Color.Cyan, Color.Reset });
-        try stdout.print("{s}USAGE:{s}\n\t{s}gmmf <directory> <file name>{s}\n", .{ Color.Bold, Color.Yellow, Color.Cyan, Color.Reset });
+        try @import("constants.zig").print_usage();
         return 69;
     }
 
-    fs.cwd().access(args[1], .{}) catch |err| {
+    const mode = if (args.len > 3) args[1] else "-f";
+    const searchTerm = args[args.len - 2];
+    const directory = args[args.len - 1];
+
+    fs.cwd().access(directory, .{}) catch |err| {
         switch (err) {
             error.FileNotFound => {
                 try stdout.print("{s}{s}ERROR: Directory Not Found{s}\n", .{ Color.Red, Color.Bold, Color.Reset });
@@ -89,9 +62,21 @@ pub fn main() !u8 {
         }
     };
 
-    if (!(try findFileRecursive(args[1], args[2], &allocator))) {
-        try stdout.print("{s}{s}File Not Found{s}\n", .{ Color.Red, Color.Bold, Color.Reset });
-        try stdout.print("\n{s}© 2024 - GMMF (General Multi-Purpose File Finder){s}\n", .{ Color.Bold, Color.Reset });
+    if (mem.eql(u8, mode, "-g") or mem.eql(u8, mode, "grep")) {
+        try stdout.print("{s}{s}Mode: GREP (case-sensitive){s}\n", .{ Color.Bold, Color.Yellow, Color.Reset });
+        const found = try grepSearch(directory, searchTerm, &allocator);
+        if (!found) {
+            try stdout.print("{s}{s}No Matches Found{s}\n", .{ Color.Red, Color.Bold, Color.Reset });
+            return 1;
+        }
+    } else if (mem.eql(u8, mode, "-f") or mem.eql(u8, mode, "find")) {
+        try stdout.print("{s}{s}Mode: FIND{s}\n", .{ Color.Bold, Color.Yellow, Color.Reset });
+        if (!(try findFileRecursive(directory, searchTerm, &allocator))) {
+            try stdout.print("{s}{s}File Not Found{s}\n", .{ Color.Red, Color.Bold, Color.Reset });
+            return 1;
+        }
+    } else {
+        try stdout.print("{s}{s}Invalid Mode: {s}{s}\n", .{ Color.Red, Color.Bold, mode, Color.Reset });
         return 1;
     }
 
