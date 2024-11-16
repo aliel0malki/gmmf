@@ -27,9 +27,4 @@ jobs:
           python-version: '3.13'
 
       - name: Run tests
-        run: |
-          chmod +x prepare-testing.sh
-          ./prepare-testing.sh
-          chmod +x test.py
-          ./test.py replay test.list
-          rm -rf __tests__
+        run: make testing
