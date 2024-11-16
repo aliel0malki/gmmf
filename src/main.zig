@@ -3,7 +3,7 @@
 //  ----------------------------------------
 //  Author: Ali El0malki
 //  License: MIT License
-//  Version: 0.45.0
+//  Version: 0.69.0
 //
 //  Copyright (c) 2024 ali elmalki
 //
