@@ -20,6 +20,19 @@
 - Blazingly fast performance
 
 
+## Comprison with Other Tools
+
+Execution time of `GMMF` vs `find`
+
+COMMAND: `gmmf -f . .`
+COMMAND: `find`
+
+| Metric        | gmmf          | find          |
+|---------------|---------------|---------------|
+| Real Time     | 0m4.103s      | 0m33.135s     |
+| User Time     | 0m0.142s      | 0m0.977s      |
+| System Time   | 0m1.621s      | 0m8.410s      |
+
 ## Installation
 
 ### Install Script
