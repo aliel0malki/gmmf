@@ -10,4 +10,4 @@
 ./build/bin/gmmf -g file6 __tests__/
 ./build/bin/gmmf -g "grep not found" __tests__/
 ./build/bin/gmmf -x "invalidmode" "term" __tests__/
-./build/bin/gmmf -g "file6" . -ex=.github -ex=.git -ex=.zig-cache
+./build/bin/gmmf -g "this is a file 2" __tests__ -ex=dir2-ex

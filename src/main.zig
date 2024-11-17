@@ -61,11 +61,10 @@ pub fn main() !u8 {
         }
     }
 
-    // Access directory and handle errors
     fs.cwd().access(directory, .{}) catch |err| {
         switch (err) {
             error.FileNotFound => {
-                try stderr.print("{s}{s}ERROR: Directory Not Found{s}\n", .{ Color.Red, Color.Bold, Color.Reset });
+                try stderr.print("{s}{s}DIRECTORY NOT FOUND{s}\n", .{ Color.Red, Color.Bold, Color.Reset });
                 return 1;
             },
             else => {
@@ -75,26 +74,23 @@ pub fn main() !u8 {
         }
     };
 
-    // Mode handling for search functionality
     if (mem.eql(u8, mode, "-g") or mem.eql(u8, mode, "grep")) {
         try stdout.print("{s}{s}Mode: GREP (case-sensitive){s}\n", .{ Color.Bold, Color.Yellow, Color.Reset });
-        const found = try grepSearch(directory, searchTerm, &allocator, exclude.items);
-        if (!found) {
-            try stdout.print("{s}{s}No Matches Found{s}\n", .{ Color.Red, Color.Bold, Color.Reset });
-            return 1;
+        if (try grepSearch(directory, searchTerm, &allocator, exclude.items) == 0) {
+            return 0;
         }
+        return 1;
     } else if (mem.eql(u8, mode, "-f") or mem.eql(u8, mode, "find")) {
         try stdout.print("{s}{s}Mode: FIND{s}\n", .{ Color.Bold, Color.Yellow, Color.Reset });
-        if (!(try findFileRecursive(directory, searchTerm, &allocator, exclude.items))) {
-            try stdout.print("{s}{s}File Not Found{s}\n", .{ Color.Red, Color.Bold, Color.Reset });
-            return 1;
+        if (try findFileRecursive(directory, searchTerm, &allocator, exclude.items) == 0) {
+            return 0;
         }
+        return 1;
     } else {
-        try stderr.print("{s}{s}Invalid Mode: {s}{s}\n", .{ Color.Red, Color.Bold, mode, Color.Reset });
+        try stderr.print("{s}{s}INVALID MODE: {s}{s}\n", .{ Color.Red, Color.Bold, mode, Color.Reset });
         return 1;
     }
 
-    // Success message
     try stdout.print("\n{s}© 2024 - GMMF (General Multi-Purpose File Finder){s}\n", .{ Color.Bold, Color.Reset });
     return 0;
 }
