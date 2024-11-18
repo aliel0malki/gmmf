@@ -1,12 +1,12 @@
-################################################################################
+
 #  GMMF - General Multi-Purpose File Finder
 #  ----------------------------------------
 #  Author: Ali El0malki
 #  License: MIT License
-#  Version: 0.2.0
-#
+#  Version: 0.70.0
+
 #  Copyright (c) 2024 Ali El0malki
-#
+
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
 #  of this software and associated documentation files (the "Software"), to deal
 #  in the Software without restriction, including without limitation the rights
@@ -16,7 +16,7 @@
 #
 #  The above copyright notice and this permission notice shall be included in all
 #  copies or substantial portions of the Software.
-#
+
 #  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 #  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 #  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -24,7 +24,7 @@
 #  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 #  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 #  SOFTWARE.
-################################################################################
+
 BUILD_DIR = build
 BIN_DIR = $(BUILD_DIR)/bin
 TARGET = gmmf
@@ -49,7 +49,5 @@ install:
 	@echo "Installed $(TARGET) to /usr/local/bin/$(TARGET)"
 debug: clean
 	zig build -Doptimize=$(OPT_DEBUG) --prefix $(BUILD_DIR)
-testing: native
-	@echo "Testing $(TARGET)..."
-	chmod +x ./test.py
-	./test.py replay test.list
+testing:
+	zig test src/tests.zig
