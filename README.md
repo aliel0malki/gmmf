@@ -1,84 +1,97 @@
-<p align="center">
-  <a href="https://github.com/aliel0malki/gmmf">
-    <img src="https://github.com/aliel0malki/gmmf/blob/main/assets/logo.png" alt="GMMF Logo" width="50" />
-  </a>
-</p>
+<p align="center">  
+  <a href="https://github.com/aliel0malki/gmmf">  
+    <img src="https://github.com/aliel0malki/gmmf/blob/main/assets/logo.png" alt="GMMF Logo" width="50" />  
+  </a>  
+</p>  
 
-**GMMF - General Multi-Purpose File Finder**
+# **GMMF - General Multi-Purpose File Finder**  
+> **0.70.0**  
 
-> version 0.69.0
+## **Overview**  
+GMMF is a fast and versatile file finder tool designed to simplify file searching with powerful features and exceptional performance.  
 
+### **Key Features:**  
+- Lightning-fast file search.  
+- Word-based search for files.  
+- Grep-like search inside file contents.  
+- Ability to exclude specific directories.  
+- Recursive search with support for hidden files.  
+- Regular expression-based search (coming soon!).  
 
-## Features
-- Quickly find files
-- Word-based search
-- Grep-like search inside files
-- Exclude directories
-- Recursive search
-- Support for hidden files
-- Regular expression-based search (coming soon)
-- Blazingly fast performance
+---
 
+## **Comparison with Other Tools**  
 
-## Comprison with Other Tools
+Below is a comparison of execution times for `GMMF` and `find` command:  
 
-Execution time of `GMMF` vs `find`
+### Commands Tested:  
+- `gmmf -f . .`  
+- `find`  
 
-COMMAND: `gmmf -f . .`
-COMMAND: `find`
+| **Metric**    | **GMMF**      | **Find**       |  
+|---------------|---------------|---------------|  
+| **Real Time** | 0m4.103s      | 0m33.135s     |  
+| **User Time** | 0m0.142s      | 0m0.977s      |  
+| **System Time** | 0m1.621s     | 0m8.410s      |  
 
-| Metric        | gmmf          | find          |
-|---------------|---------------|---------------|
-| Real Time     | 0m4.103s      | 0m33.135s     |
-| User Time     | 0m0.142s      | 0m0.977s      |
-| System Time   | 0m1.621s      | 0m8.410s      |
+---
 
-## Installation
+## **Installation**  
 
-### Install Script
+### **Auto Installation**  
+Run the following command to install GMMF:  
+```bash  
+curl -fsSL https://raw.githubusercontent.com/aliel0malki/gmmf/main/install.sh | bash  
+```  
 
-```bash
-curl -fsSL https://raw.githubusercontent.com/aliel0malki/gmmf/main/install.sh | bash
-```
+### **Building from Source**  
+1. Clone the repository:  
+   ```bash  
+   git clone https://github.com/aliel0malki/gmmf.git  
+   cd gmmf  
+   ```  
+2. Build and install:  
+   ```bash  
+   make  
+   sudo make install  
+   ```  
 
-### From Source Code
-To build `GMMF` from source:
+### **Downloading Pre-Built Binaries**  
+Download binaries from the [Releases Page](https://github.com/aliel0malki/gmmf/releases):  
+1. Visit the [releases page](https://github.com/aliel0malki/gmmf/releases).  
+2. Download the binary for your platform (e.g., `aarch64-linux`, `x86_64-linux`).  
 
-```bash
-git clone https://github.com/aliel0malki/gmmf.git
-cd gmmf
-make
-sudo make install
-```
+---
 
-### From Releases
-Download a pre-built binary for your platform from the [releases page](https://github.com/aliel0malki/gmmf/releases).
+## **Usage**  
 
-1. Go to the [releases page](https://github.com/aliel0malki/gmmf/releases).
-2. Download the binary matching your platform (e.g., `aarch64-linux`, `x86_64-linux`).
+Run GMMF from your terminal using the format below:  
+```bash  
+gmmf <mode> <search string> <directory> [options]  
+```  
 
+### **Modes:**  
+- `-f`: Search for a file by name.  
+- `-g`: Search for a string inside files.  
 
-## Usage
-To use `GMMF`, run it from your terminal with the following format:
+### **Options:**  
+- `-ex=<directory>`: Exclude specific directories from the search.  
 
-```bash
-gmmf <mode> <search string> <directory> [options]
-```
+### **Examples:**  
+- Find a file:  
+  ```bash  
+  gmmf -f documents.txt /home/user  
+  ```  
+- Search within files:  
+  ```bash  
+  gmmf -g "search text" /home/user  
+  ```  
+- Exclude a director(y/ies):  
+  ```bash  
+  gmmf -g "search text" /home/user -ex=workspace -ex=dont-touch
+  ```  
 
-### Modes:
-- `-f`: Search for a word in files.
-- `-g`: Search for a string inside files (grep-like search).
+---
 
-### Options:
-- `-ex=`: Exclude directories.
-
-### Examples:
-```bash
-gmmf -f documents.txt /home/user
-gmmf -g "find this text" /home/user
-gmmf -g "find this text" /home/user -ex=workspace
-```
-
-
-## License
-Distributed under the MIT License. See `LICENSE` for more information.
+## **License**  
+Distributed under the MIT License. See the `LICENSE` file for details.
