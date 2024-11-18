@@ -4,7 +4,9 @@ const mem = std.mem;
 const out = std.io.getStdOut();
 var buf = std.io.bufferedWriter(out.writer());
 var stdout = buf.writer();
+
 var is_header_printed = false;
+var found = false;
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
 const MAX_BUFFER_SIZE = 1024 * 1024;
@@ -18,15 +20,11 @@ pub const Color = struct {
     pub const Bold = "\x1b[1m";
 };
 
-pub fn findFileRecursive(dir_path: []const u8, target: []const u8, allocator: *std.mem.Allocator, exclude: []const []const u8) !u8 {
+pub fn findFileRecursive(dir_path: []const u8, target: []const u8, allocator: *std.mem.Allocator, exclude: []const []const u8) !bool {
     var dir = try fs.cwd().openDir(dir_path, .{ .iterate = true });
     defer dir.close();
     var iter = dir.iterate();
-
-    if (!is_header_printed) {
-        try stdout.print("{s}{s}FOUND:{s}\n", .{ Color.Green, Color.Bold, Color.Reset });
-        is_header_printed = true;
-    }
+    found = false;
 
     while (try iter.next()) |entry| {
         var skip = false;
@@ -47,6 +45,11 @@ pub fn findFileRecursive(dir_path: []const u8, target: []const u8, allocator: *s
         }
 
         if (mem.containsAtLeast(u8, entry.name, 1, target)) {
+            if (!is_header_printed) {
+                try stdout.print("{s}{s}FOUND:{s}\n", .{ Color.Green, Color.Bold, Color.Reset });
+                is_header_printed = true;
+            }
+            found = true;
             const file_path = try std.fs.path.join(allocator.*, &.{ dir_path, "/", entry.name });
             defer allocator.free(file_path);
 
@@ -55,18 +58,14 @@ pub fn findFileRecursive(dir_path: []const u8, target: []const u8, allocator: *s
         try buf.flush();
     }
 
-    return 0;
+    return found;
 }
 
-pub fn grepSearch(dir_path: []const u8, target: []const u8, allocator: *std.mem.Allocator, exclude: []const []const u8) !u8 {
+pub fn grepSearch(dir_path: []const u8, target: []const u8, allocator: *std.mem.Allocator, exclude: []const []const u8) !bool {
     var dir = try fs.cwd().openDir(dir_path, .{ .iterate = true });
     defer dir.close();
     var iter = dir.iterate();
-
-    if (!is_header_printed) {
-        try stdout.print("{s}{s}FOUND IN:{s}\n", .{ Color.Green, Color.Bold, Color.Reset });
-        is_header_printed = true;
-    }
+    found = false;
 
     while (try iter.next()) |entry| {
         var skip = false;
@@ -96,12 +95,11 @@ pub fn grepSearch(dir_path: []const u8, target: []const u8, allocator: *std.mem.
         if (file_size > MAX_FILE_SIZE) {
             try stdout.print("{s}{s}ERROR: File Too Large to Process.{s}\n", .{ Color.Red, Color.Bold, Color.Reset });
             try buf.flush();
-            return 1;
+            return false;
         }
 
         var buffer: [MAX_BUFFER_SIZE]u8 = undefined;
         var line_number: usize = 0;
-        const found_at: usize = 0;
 
         var total_read: usize = 0;
         while (try reader.readUntilDelimiterOrEof(&buffer, '\n')) |line| {
@@ -111,10 +109,16 @@ pub fn grepSearch(dir_path: []const u8, target: []const u8, allocator: *std.mem.
             if (total_read > MAX_FILE_SIZE) {
                 try stdout.print("{s}{s}ERROR: File Too Large to Process.{s}\n", .{ Color.Red, Color.Bold, Color.Reset });
                 try buf.flush();
-                return 1;
+                return false;
             }
 
             if (mem.containsAtLeast(u8, line, 1, target)) {
+                if (!is_header_printed) {
+                    try stdout.print("{s}{s}FOUND:{s}\n", .{ Color.Green, Color.Bold, Color.Reset });
+                    is_header_printed = true;
+                }
+                const found_at = mem.indexOf(u8, line, target).?;
+                found = true;
                 const file_path = try std.fs.path.join(allocator.*, &.{ dir_path, "/", entry.name });
                 defer allocator.free(file_path);
 
@@ -124,5 +128,5 @@ pub fn grepSearch(dir_path: []const u8, target: []const u8, allocator: *std.mem.
         }
     }
 
-    return 0;
+    return found;
 }
