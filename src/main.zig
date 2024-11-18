@@ -1,22 +1,21 @@
-////////////////////////////////////////////////////////////////////////////////
 //  GMMF - General Multi-Purpose File Finder
 //  ----------------------------------------
 //  Author: Ali El0malki
 //  License: MIT License
-//  Version: 0.69.0
-//
+//  Version: 0.70.0
+
 //  Copyright (c) 2024 ali elmalki
-//
+
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
 //  in the Software without restriction, including without limitation the rights
 //  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 //  copies of the Software, and to permit persons to whom the Software is
 //  furnished to do so, subject to the following conditions:
-//
+
 //  The above copyright notice and this permission notice shall be included in all
 //  copies or substantial portions of the Software.
-//
+
 //  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 //  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 //  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -24,7 +23,7 @@
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
-////////////////////////////////////////////////////////////////////////////////
+
 const std = @import("std");
 const fs = std.fs;
 const mem = std.mem;
@@ -76,15 +75,19 @@ pub fn main() !u8 {
 
     if (mem.eql(u8, mode, "-g") or mem.eql(u8, mode, "grep")) {
         try stdout.print("{s}{s}Mode: GREP (case-sensitive){s}\n", .{ Color.Bold, Color.Yellow, Color.Reset });
-        if (try grepSearch(directory, searchTerm, &allocator, exclude.items) == 0) {
+        const found = try grepSearch(directory, searchTerm, &allocator, exclude.items);
+        if (found) {
             return 0;
         }
+        // try stdout.print("{s}NO MATCHES FOUND FOR '{s}' IN DIRECTORY '{s}'{s}\n", .{ Color.Red, searchTerm, directory, Color.Reset });
         return 1;
     } else if (mem.eql(u8, mode, "-f") or mem.eql(u8, mode, "find")) {
         try stdout.print("{s}{s}Mode: FIND{s}\n", .{ Color.Bold, Color.Yellow, Color.Reset });
-        if (try findFileRecursive(directory, searchTerm, &allocator, exclude.items) == 0) {
+        const found = try findFileRecursive(directory, searchTerm, &allocator, exclude.items);
+        if (found) {
             return 0;
         }
+        // try stdout.print("{s}FILE '{s}' NOT FOUND IN DIRECTORY '{s}'{s}\n", .{ Color.Red, searchTerm, directory, Color.Reset });
         return 1;
     } else {
         try stderr.print("{s}{s}INVALID MODE: {s}{s}\n", .{ Color.Red, Color.Bold, mode, Color.Reset });

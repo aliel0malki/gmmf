@@ -5,7 +5,9 @@
 </p>  
 
 # **GMMF - General Multi-Purpose File Finder**  
-> **0.69.0**  
+
+> **0.70.0**  
+
 
 ## **Overview**  
 GMMF is a fast and versatile file finder tool designed to simplify file searching with powerful features and exceptional performance.  
@@ -22,7 +24,7 @@ GMMF is a fast and versatile file finder tool designed to simplify file searchin
 
 ## **Comparison with Other Tools**  
 
-Below is a comparison of execution times for `GMMF` and the `find` command:  
+Below is a comparison of execution times for `GMMF` and `find` command:  
 
 ### Commands Tested:  
 - `gmmf -f . .`  

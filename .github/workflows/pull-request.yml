@@ -21,10 +21,5 @@ jobs:
       - name: Build the binary
         run: make
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.13'
-
       - name: Run tests
         run: make testing

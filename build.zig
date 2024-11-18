@@ -1,22 +1,21 @@
-////////////////////////////////////////////////////////////////////////////////
 //  GMMF - General Multi-Purpose File Finder
 //  ----------------------------------------
 //  Author: Ali El0malki
 //  License: MIT License
-//  Version: 0.2.0
-//
+//  Version: 0.70.0
+
 //  Copyright (c) 2024 ali elmalki
-//
+
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
 //  in the Software without restriction, including without limitation the rights
 //  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 //  copies of the Software, and to permit persons to whom the Software is
 //  furnished to do so, subject to the following conditions:
-//
+
 //  The above copyright notice and this permission notice shall be included in all
 //  copies or substantial portions of the Software.
-//
+
 //  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 //  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 //  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -24,9 +23,8 @@
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
-////////////////////////////////////////////////////////////////////////////////
+
 const std = @import("std");
-const builtin = @import("builtin");
 
 const NAME = "gmmf";
 
@@ -47,7 +45,16 @@ pub fn build(b: *std.Build) !void {
         .optimize = optimize,
         .strip = optimize != .Debug,
     });
+
     b.installArtifact(exe);
+
+    const tests = b.addTest(.{
+        .root_source_file = b.path("src/tests.zig"),
+        .target = target,
+        .optimize = optimize,
+    });
+
+    const run_tests = b.addRunArtifact(tests);
 
     const run_cmd = b.addRunArtifact(exe);
     run_cmd.step.dependOn(b.getInstallStep());
@@ -56,6 +63,8 @@ pub fn build(b: *std.Build) !void {
     }
     const run_step = b.step("run", "Run the app");
     run_step.dependOn(&run_cmd.step);
+    const test_step = b.step("test", "Run all Test");
+    test_step.dependOn(&run_tests.step);
 }
 
 fn build_targets(b: *std.Build) !void {
