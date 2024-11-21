@@ -1,25 +1,26 @@
 const std = @import("std");
-const findFileRecursive = @import("utils.zig").findFileRecursive;
-const grepSearch = @import("utils.zig").grepSearch;
+const Core = @import("core.zig");
 
 const dir = "__tests__";
 
-test "findFileRecursive" {
+test "find" {
     var allocator = std.testing.allocator;
+    var core: Core.Core = try Core.Core.init(&allocator);
 
-    const found = try findFileRecursive(dir, "target.txt", &allocator, &[_][]const u8{"exclude"});
-    try std.testing.expect(found == true);
+    const found = try core.find(dir, "needle.txt", &[_][]const u8{"exclude"});
+    try std.testing.expect(found);
 
-    const not_found = try findFileRecursive(dir, "missing.txt", &allocator, &[_][]const u8{"exclude"});
-    try std.testing.expect(not_found != true);
+    const not_found = try core.find(dir, "missing.txt", &[_][]const u8{"exclude"});
+    try std.testing.expect(!not_found);
 }
 
 test "grepSearch" {
     var allocator = std.testing.allocator;
+    var core: Core.Core = try Core.Core.init(&allocator);
 
-    const found = try grepSearch(dir, "needle", &allocator, &[_][]const u8{"exclude"});
-    try std.testing.expect(found == true);
+    const found = try core.grep(dir, "needle", &[_][]const u8{"exclude"});
+    try std.testing.expect(found);
 
-    const not_found = try grepSearch(dir, "missing", &allocator, &[_][]const u8{"exclude"});
-    try std.testing.expect(not_found != true);
+    const not_found = try core.grep(dir, "missing", &[_][]const u8{"exclude"});
+    try std.testing.expect(!not_found);
 }

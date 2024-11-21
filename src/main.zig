@@ -1,9 +1,4 @@
-//  GMMF - General Multi-Purpose File Finder
-//  ----------------------------------------
-//  Author: Ali El0malki
-//  License: MIT License
-//  Version: 0.70.0
-
+// ----------------------------------------------------------------------------
 //  Copyright (c) 2024 ali elmalki
 
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,6 +18,7 @@
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
+// ----------------------------------------------------------------------------
 
 const std = @import("std");
 const fs = std.fs;
@@ -31,20 +27,19 @@ const heap = std.heap;
 const proc = std.process;
 const stdout = std.io.getStdOut().writer();
 const stderr = std.io.getStdErr().writer();
-const Color = @import("utils.zig").Color;
-const findFileRecursive = @import("utils.zig").findFileRecursive;
-const grepSearch = @import("utils.zig").grepSearch;
+const Color = @import("config.zig").Color;
+const Core = @import("core.zig");
 
 pub fn main() !u8 {
-    var gpa = heap.GeneralPurposeAllocator(.{}){};
-    var allocator = gpa.allocator();
-    defer _ = gpa.deinit();
+    var arena = heap.ArenaAllocator.init(heap.page_allocator);
+    defer arena.deinit();
+    var allocator = arena.allocator();
 
     const args = try proc.argsAlloc(allocator);
     defer proc.argsFree(allocator, args);
 
     if (args.len < 3) {
-        try @import("constants.zig").print_usage();
+        try @import("config.zig").print_usage();
         return 69;
     }
 
@@ -73,21 +68,21 @@ pub fn main() !u8 {
         }
     };
 
+    var core: Core.Core = try Core.Core.init(&allocator);
+
     if (mem.eql(u8, mode, "-g") or mem.eql(u8, mode, "grep")) {
         try stdout.print("{s}{s}Mode: GREP (case-sensitive){s}\n", .{ Color.Bold, Color.Yellow, Color.Reset });
-        const found = try grepSearch(directory, searchTerm, &allocator, exclude.items);
+        const found = try core.grep(directory, searchTerm, exclude.items);
         if (found) {
             return 0;
         }
-        // try stdout.print("{s}NO MATCHES FOUND FOR '{s}' IN DIRECTORY '{s}'{s}\n", .{ Color.Red, searchTerm, directory, Color.Reset });
         return 1;
     } else if (mem.eql(u8, mode, "-f") or mem.eql(u8, mode, "find")) {
         try stdout.print("{s}{s}Mode: FIND{s}\n", .{ Color.Bold, Color.Yellow, Color.Reset });
-        const found = try findFileRecursive(directory, searchTerm, &allocator, exclude.items);
+        const found = try core.find(directory, searchTerm, exclude.items);
         if (found) {
             return 0;
         }
-        // try stdout.print("{s}FILE '{s}' NOT FOUND IN DIRECTORY '{s}'{s}\n", .{ Color.Red, searchTerm, directory, Color.Reset });
         return 1;
     } else {
         try stderr.print("{s}{s}INVALID MODE: {s}{s}\n", .{ Color.Red, Color.Bold, mode, Color.Reset });

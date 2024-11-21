@@ -4,37 +4,19 @@
   </a>  
 </p>  
 
-# **GMMF - General Multi-Purpose File Finder**  
 
-> **0.70.0**  
+> **1.0.0**  
 
 
-## **Overview**  
-GMMF is a fast and versatile file finder tool designed to simplify file searching with powerful features and exceptional performance.  
+# Motivation
+well.. everytime i want to use `find` or `grep` commands, i forgot how to use them. so i made my own.
 
 ### **Key Features:**  
 - Lightning-fast file search.  
-- Word-based search for files.  
-- Grep-like search inside file contents.  
+- Find a file by name or part of its name.
+- Search within files for a specific string.
 - Ability to exclude specific directories.  
-- Recursive search with support for hidden files.  
 - Regular expression-based search (coming soon!).  
-
----
-
-## **Comparison with Other Tools**  
-
-Below is a comparison of execution times for `GMMF` and `find` command:  
-
-### Commands Tested:  
-- `gmmf -f . .`  
-- `find`  
-
-| **Metric**    | **GMMF**      | **Find**       |  
-|---------------|---------------|---------------|  
-| **Real Time** | 0m4.103s      | 0m33.135s     |  
-| **User Time** | 0m0.142s      | 0m0.977s      |  
-| **System Time** | 0m1.621s     | 0m8.410s      |  
 
 ---
 
@@ -43,7 +25,7 @@ Below is a comparison of execution times for `GMMF` and `find` command:
 ### **Auto Installation**  
 Run the following command to install GMMF:  
 ```bash  
-curl -fsSL https://raw.githubusercontent.com/aliel0malki/gmmf/main/install.sh | bash  
+curl -fsSL https://raw.githubusercontent.com/aliel0malki/gmmf/main/scripts/install.sh | bash  
 ```  
 
 ### **Building from Source**  

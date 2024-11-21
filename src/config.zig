@@ -1,6 +1,14 @@
 const std = @import("std");
 const stdout = std.io.getStdOut().writer();
-const Color = @import("utils.zig").Color;
+
+pub const Color = struct {
+    pub const Reset = "\x1b[0m";
+    pub const Green = "\x1b[32m";
+    pub const Yellow = "\x1b[33m";
+    pub const Red = "\x1b[31m";
+    pub const Cyan = "\x1b[36m";
+    pub const Bold = "\x1b[1m";
+};
 
 pub fn print_usage() !void {
     try stdout.print("\n{s}GMMF - General Multi-Purpose File Finder{s}\n", .{ Color.Cyan, Color.Reset });
@@ -20,7 +28,7 @@ pub fn print_usage() !void {
     try stdout.print("  -ex=<directory>              : Exclude directories from search\n", .{});
 
     try stdout.print("\nEXAMPLES:\n", .{});
-    try stdout.print("  gmmf -f Documents.txt /home/user\n", .{});
-    try stdout.print("  gmmf -g 'find this text' /home/user\n", .{});
-    try stdout.print("  gmmf -f Documents.txt /home/user -ex=Documents\n", .{});
+    try stdout.print("  gmmf -f documents.txt /home/user\n", .{});
+    try stdout.print("  gmmf -g \"search text\" /home/user\n", .{});
+    try stdout.print("  gmmf -g \"search text\" /home/user -ex=workspace -ex=dont-touch\n", .{});
 }

@@ -1,9 +1,4 @@
-//  GMMF - General Multi-Purpose File Finder
-//  ----------------------------------------
-//  Author: Ali El0malki
-//  License: MIT License
-//  Version: 0.70.0
-
+// ----------------------------------------------------------------------------
 //  Copyright (c) 2024 ali elmalki
 
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,6 +18,7 @@
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
+// ----------------------------------------------------------------------------
 
 const std = @import("std");
 
@@ -53,8 +49,11 @@ pub fn build(b: *std.Build) !void {
         .target = target,
         .optimize = optimize,
     });
+    tests.test_server_mode = false;
 
     const run_tests = b.addRunArtifact(tests);
+    const test_step = b.step("test", "Run all the tests");
+    test_step.dependOn(&run_tests.step);
 
     const run_cmd = b.addRunArtifact(exe);
     run_cmd.step.dependOn(b.getInstallStep());
@@ -63,8 +62,6 @@ pub fn build(b: *std.Build) !void {
     }
     const run_step = b.step("run", "Run the app");
     run_step.dependOn(&run_cmd.step);
-    const test_step = b.step("test", "Run all Test");
-    test_step.dependOn(&run_tests.step);
 }
 
 fn build_targets(b: *std.Build) !void {
@@ -82,7 +79,7 @@ fn build_targets(b: *std.Build) !void {
             .name = NAME,
             .root_source_file = b.path("src/main.zig"),
             .target = target,
-            .optimize = .ReleaseSafe,
+            .optimize = .ReleaseFast,
             .strip = true,
         });
 
