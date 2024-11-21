@@ -1,10 +1,4 @@
-
-#  GMMF - General Multi-Purpose File Finder
-#  ----------------------------------------
-#  Author: Ali El0malki
-#  License: MIT License
-#  Version: 0.70.0
-
+# ----------------------------------------------------------------------------
 #  Copyright (c) 2024 Ali El0malki
 
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,11 +18,12 @@
 #  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 #  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 #  SOFTWARE.
+# ----------------------------------------------------------------------------
 
 BUILD_DIR = build
 BIN_DIR = $(BUILD_DIR)/bin
 TARGET = gmmf
-OPT_SAFE = ReleaseSafe
+OPT_SAFE = ReleaseFast
 OPT_DEBUG = Debug
 
 .PHONY: all clean run install testing debug
@@ -49,5 +44,5 @@ install:
 	@echo "Installed $(TARGET) to /usr/local/bin/$(TARGET)"
 debug: clean
 	zig build -Doptimize=$(OPT_DEBUG) --prefix $(BUILD_DIR)
-testing:
-	zig test src/tests.zig
+testing: clean
+	zig build test
