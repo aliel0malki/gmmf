@@ -11,8 +11,7 @@ pub const Color = struct {
 };
 
 pub fn print_usage() !void {
-    try stdout.print("\n{s}GMMF - General Multi-Purpose File Finder{s}\n", .{ Color.Cyan, Color.Reset });
-    try stdout.print("\nUSAGE:\n", .{});
+    try stdout.print("\nUSAGE: v1.0.0\n", .{});
     try stdout.print("  gmmf <mode> <search term> <directory> [options]\n", .{});
 
     try stdout.print("\nARGUMENTS:\n", .{});
